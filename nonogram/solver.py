@@ -33,11 +33,13 @@ def valid_placements(group_sizes,
         empty = set()
     if filled is None:
         filled = set()
-    ps = _placements(group_sizes, size)
-    return list(filter(lambda p: _is_valid(p, filled, empty), ps))
+    placements = _calc_placements(group_sizes, size)
+    if not filled and not empty:
+        return placements
+    return list(filter(lambda p: _is_valid(p, filled, empty), placements))
 
 
-def _placements(group_sizes, size, start=0):
+def _calc_placements(group_sizes, size, start=0):
     if not group_sizes:
         return [[]]
     first_size = group_sizes[0]
@@ -52,7 +54,7 @@ def _placements(group_sizes, size, start=0):
         end_excl = begin + first_size
         placement = (begin, end_excl)
         new_start = start + offset + first_size + 1
-        for ps in _placements(remaining, size, new_start):
+        for ps in _calc_placements(remaining, size, new_start):
             ret.append([placement] + ps)
     return ret
 
